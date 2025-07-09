@@ -1,42 +1,152 @@
-# vibecli
+vibe
 
-**vibecli** is a terminal-first AI-powered assistant that transforms natural language into executable shell commands. Inspired by the need for faster problem-solving and hands-on learning, vibecli bridges the gap between remembering syntax and getting the job done. It helps users learn shell commands over time through guided practice and explanations.
+vibe is a Zsh plugin that helps you generate, learn, and safely execute shell commands using natural language queries and a locally hosted LLM (such as Ollama). Designed to bridge the gap between “what do I want to do?” and “how do I write that command?”, vibe makes your terminal faster, smarter, and more educational.
 
-## 🚀 Goals
+🚀 Features
 
-- Translate user requests into shell commands using a locally-hosted LLM (initially via Ollama)
-- Provide explainable output to help users understand what each command does
-- Enable a "learning mode" where users practice applying commands and flags
-- Sandbox risky commands and encourage safe experimentation
+🔨 Natural language → shell command translation using a local Ollama model.
 
-## 🔧 Features (Planned)
+📖 Explain what the generated command does.
 
-- 🔨 Natural language to command-line translation
-- 📖 Explain the generated command in a pop-up or split terminal window
-- 🧠 Learning mode with guided exercises and challenges
-- 🛡️ Safety layer to detect destructive commands (e.g., `rm -rf /`)
-- ⚙️ Configurable LLM backend (initially supporting Ollama)
+🧠 Learning mode: practice exercises to help you memorize and apply commands.
 
-## 🔌 Requirements
+🛡️ Safety checks for risky commands (rm -rf /, etc.).
 
-- Python 3.11+
-- Ollama server running locally (`ollama serve`)
-- Terminal emulator with support for multiplexing (e.g., tmux, or eventually vibecli's own wrapper)
+⚙️ Built as an Oh My Zsh plugin for seamless shell integration.
 
-## 🚧 Roadmap
+🎛️ Plans for multiplexed output (e.g., explanation and command in split panes).
 
-| Phase | Milestone                                                      | Target Release |
-|------|------------------------------------------------------------------|----------------|
-| 0.1  | Local MVP: Prompt → Ollama → Shell command output                | Week 1         |
-| 0.2  | Add explanation window / terminal split                          | Week 2         |
-| 0.3  | Sandbox evaluation of risky commands                             | Week 3         |
-| 0.4  | Learning mode w/ quizzes and practice                            | Week 4-5       |
-| 0.5  | CLI polish, config files, installation script                    | Week 6         |
-| 1.0  | Public release on GitHub / PyPI                                  | TBD            |
-| 1.1+ | Support for other LLM providers, advanced sandboxing, extensions | TBD            |
+🔧 Installation
 
-## 🔍 Example Usage
+1. Clone the plugin into your custom plugins directory:
 
-```bash
-#~>vibe "check journalctl for errors related to nvidia or docker"
-#~(output)>journalctl
+git clone git@github-vibe:LoganPederson/vibe.git ~/.oh-my-zsh/custom/plugins/vibe
+
+2. Enable it in your .zshrc:
+
+# Example
+plugins=(git ssh-agent fzf-tab vibe)
+
+3. Reload your shell:
+
+source ~/.zshrc
+
+🔌 Requirements
+
+Zsh 5.8+ with Oh My Zsh
+
+Python 3.11+
+
+Running Ollama server (ollama serve)
+
+Optional: tmux or another terminal multiplexer for advanced modes
+
+🛠️ Usage
+
+🔍 Basic Use
+
+Type your natural language query directly into your shell prompt and press the bound key (e.g., Shift + +) to trigger vibe. The contents of your prompt will be passed to the LLM and replaced with the generated command.
+
+Example workflow:
+
+Type your request in your prompt (e.g., list all files larger than 1GB in the /var directory).
+
+Press your configured keybind.
+
+vibe replaces the prompt buffer with the generated command.
+
+You review and manually execute it.
+
+🧠 Learning Mode (Planned)
+
+Learning mode will:
+
+Explain each flag in the generated command.
+
+Give you guided practice writing the command from scratch.
+
+Quiz you on similar command structures.
+
+📅 Roadmap
+
+Phase
+
+Milestone
+
+Target
+
+0.1
+
+Local MVP: natural language → command
+
+Done
+
+0.2
+
+Add inline explanations in split terminal panes
+
+WIP
+
+0.3
+
+Sandbox execution for risky commands
+
+TBD
+
+0.4
+
+Learning mode with quizzes and guided exercises
+
+TBD
+
+0.5
+
+CLI polish, config files, installation script
+
+TBD
+
+1.0
+
+Public release on GitHub / Oh My Zsh registry
+
+TBD
+
+1.1+
+
+Additional LLM backends, advanced sandboxing, extensibility
+
+TBD
+
+⚙️ Example Workflow
+
+# Step 1: Type a request into your shell:
+list all open TCP ports
+
+# Step 2: Press your keybind (e.g., Shift + +)
+
+# Step 3: vibe replaces the line with:
+lsof -iTCP -sTCP:LISTEN -P -n
+
+# Step 4: You confirm and run the command.
+
+🔐 Security Note
+
+vibe does not automatically run commands.It inserts the generated command into your shell prompt for review and manual execution.
+
+Future versions will detect and sandbox potentially destructive commands.
+
+📂 Project Goals
+
+Help intermediate users level up their shell skills.
+
+Accelerate repetitive or hard-to-remember command usage.
+
+Create an approachable way to learn shell tools and options.
+
+🤝 Contributing
+
+PRs and ideas are welcome! Future plans include adding test coverage, plugin documentation, and support for other shells.
+
+ℹ️ Possible Future CLI Support
+
+We may eventually add a CLI interface to vibe that simply prints the generated command to stdout. This could be paired with a Vim-friendly keybind to yank the previous output lines. For now, focus is on Zsh widget integration where the shell buffer can be directly updated.
