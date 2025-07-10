@@ -1,18 +1,33 @@
+#
+#
+#
+#
+#
 function vibe() {
-  # Capture the user's question from the current buffer
-  local question="$BUFFER"
+  # Capture the user's request from the current buffer
+  local request="$BUFFER"
+  clear_line()  
+  # Clear the buffer 
 
-  # Optional: clear the current input line before running anything
-  BUFFER=""
+  # Add request to the history (so users can up arrow and see what they asked)
+  print -s "$BUFFER"
 
-  # Run your Python script with the question
+
+  # Run your Python script with the request
   local cmd=$(source ~/programming/vibe/env/bin/activate &&
-              python ~/programming/vibe/vibe-cli.py "$question" &&
+              python ~/programming/vibe/vibe.py "$request" &&
               deactivate)
 
   # Replace the prompt with the generated command
-  LBUFFER+="$cmd"
+  BUFFER="$cmd"
 }
+
+function clear_line(){
+  BUFFER=""
+  cursor=0
+  zle reset-prompt
+}
+
 
 # Register as a ZLE widget
 zle -N vibe

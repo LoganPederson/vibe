@@ -12,11 +12,7 @@ import json
 
 # CLI options and arguments
 parser = optparse.OptionParser()
-parser.add_option("-f", "--file", dest="filename",  
-help="writ report to FILE", metavar="FILE")  
-parser.add_option("-q", "--quiet",  
-action="store_false", dest="verbose", default=True,
-help="CLI LLM Query for zsh terminal syntax")
+help="LLM Query for zsh terminal syntax"
 
 (options, args) = parser.parse_args()
 USER_QUERY=args[0] # TODO: add check for args, safe exit or retry mechanism
@@ -30,7 +26,35 @@ def generate_output_command(userinput:str) -> str:
     URL="http://localhost:7869"
     DATA={
         "model": "llama3:8b",
-        "prompt": f"You are VibeCLI, a helpful and precise assistant for command-line users. \n\nInput: What is the correct shell syntax to: {USER_QUERY}\n\nRespond with only the output of the command or the result of the request, no additional commentary. Format clearly. Respond with the output only. Limit to 5 lines maximum. No explanations, examples, or follow-up suggestions.\n\nOutput:",
+        "prompt": f"""You are VibeCLI, a helpful and precise assistant for command-line users.
+
+        Task: You will be given a string from the user who would like returned
+        a shell command matching their description, generate the correct shell command to accomplish the task. 
+        Provide the command first, then give a brief explanation of each part of the command.
+   
+        Format your response like this:
+        Command:
+        <the full command>
+
+        Explanation (don't include this line, I am just labelling the below content):
+        <brief explanation of the command and its flags, one line per part, commented out as the user will be running your returned command.>
+        
+       
+        Example User Request:
+        "list all file in the directory tmp"
+
+        Example Command You Respond With:
+        ls -lah /tmp
+
+        Example Explanation You might provide, commented out:
+        ls: list directory contents
+        -l: use a long listing format
+        -a: include hidden files
+        -h: human-readable file sizes
+        /tmp: target the /tmp directory
+
+        Request:
+        {USER_QUERY}""",
         "stream": False
     }
  
@@ -44,7 +68,7 @@ def generate_output_command(userinput:str) -> str:
     if r.status_code == 200:
         response = r.json()["response"]
         response = clean_response_string(response)
-        print(response)
+        print(response,end='')
         return response 
 
     
@@ -55,12 +79,25 @@ def generate_output_command(userinput:str) -> str:
 
 
 def clean_response_string(response_string:str) -> str:
+    '''
+    Often the response string tends to include these    
+    '''
+    # strip new line characters
+    response_string = response_string.strip('\n')
+    # replace backtick blocks
+    response_string = response_string.replace("```","")
+    # replace triple single quote blocks
+    response_string = response_string.replace("'''","")
+    # replace 'Command:' like starting phrases
+    response_string = response_string.replace("Command:","")
+    # replace 'Explanation:'
+    cleaned_response = response_string.replace("Explanation:","")
+    return cleaned_response
 
-    # remove backtick blocks
-    clean_string = response_string.strip("```")
-    return clean_string
-
-
+def check_for_sudo(cleaned_response:str) -> bool:
+    if 'sudo' in cleaned_response.lower():
+        return True 
+    return False
 
 if __name__ == "__main__":
     output_command = generate_output_command(USER_QUERY)
