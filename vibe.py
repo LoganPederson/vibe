@@ -6,7 +6,10 @@
 import requests
 import optparse
 import json
+import os
 
+OLLAMA_URL = os.getenv("OLLAMA_URL", "http://localhost:7869")
+OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "llama3:8b")
 
 # CLI options and arguments
 parser = optparse.OptionParser()
@@ -21,9 +24,9 @@ USER_QUERY=args[0] # TODO: add check for args, safe exit or retry mechanism
 def generate_output_command(userinput:str) -> str:
     #TODO: add HTTP code handling as needed (what do you do if 400? or 404? or 500?)
     #TODO: strip output of triple quotes if using llama3
-    URL="http://localhost:7869"
+    URL=OLLAMA_URL
     DATA={
-        "model": "llama3:8b",
+        "model": OLLAMA_MODEL,
         "prompt": f"""You are VibeCLI, a helpful and precise assistant for command-line users.
 
         Task: You will be given a string from the user who would like returned
@@ -66,7 +69,7 @@ def generate_output_command(userinput:str) -> str:
     if r.status_code == 200:
         response = r.json()["response"]
         response = clean_response_string(response)
-        print(response,end='')
+        print(response.strip(),end='')
         return response 
 
     
@@ -89,8 +92,8 @@ def clean_response_string(response_string:str) -> str:
     # replace 'Command:' like starting phrases
     response_string = response_string.replace("Command:","")
     # replace 'Explanation:'
-    cleaned_response = response_string.replace("Explanation:","")
-    return cleaned_response
+    response_string = response_string.replace("Explanation:","")
+    return response_string.strip() # after replacing the above, we might be left with empty lines
 
 def check_for_sudo(cleaned_response:str) -> str:
     #TODO: implement better safeguards 

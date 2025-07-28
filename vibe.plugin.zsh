@@ -1,6 +1,7 @@
 #
 #
-#
+VIBE_PYTHON="${VIBE_PYTHON:-python3}"
+VIBE_SCRIPT="${VIBE_SCRIPT:-$HOME/.oh-my-zsh/custom/plugins/vibecli/vibe.py}"
 #
 #
 function vibe() {
@@ -9,7 +10,7 @@ function vibe() {
   # Clear the buffer 
 
   # Run your Python script with the request
-local cmd=$("$HOME/programming/vibe/env/bin/python" ~/programming/vibe/vibe.py "$request" 2>/dev/null)
+local cmd=$("$VIBE_PYTHON" "$VIBE_SCRIPT" "$request" 2>/dev/null)
 
   # Replace the prompt with the generated command
   BUFFER=""

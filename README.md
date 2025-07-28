@@ -10,7 +10,7 @@ vibe is a Zsh plugin that helps you generate, learn, and safely execute shell co
 
 🧠 Learning mode: practice exercises to help you memorize and apply commands.
 
-🛡️ Safety checks for risky commands (rm -rf /, etc.).
+🛡️ Safety checks for risky commands (sudo rm -rf /, etc.).
 
 ⚙️ Built as an Oh My Zsh plugin for seamless shell integration.
 
