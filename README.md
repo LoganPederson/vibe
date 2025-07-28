@@ -43,7 +43,7 @@ docker logs -f ollama
 1. Clone into your Oh My Zsh custom plugins directory:
 
 ```bash
-git clone https://github.com/yourusername/vibe.git ~/.oh-my-zsh/custom/plugins/vibe
+git clone https://github.com/LoganPederson/vibe.git ~/.oh-my-zsh/custom/plugins/vibe
 ```
 
 2. Enable the plugin in your `.zshrc`:

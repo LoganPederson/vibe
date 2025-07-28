@@ -30,4 +30,4 @@ function clear_line(){
 zle -N vibe
 
 # Bind pluss (+) 
-bindkey '+' vibe
+bindkey '^G' vibe
