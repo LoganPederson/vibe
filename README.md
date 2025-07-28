@@ -1,152 +1,123 @@
-vibe
+# vibe
 
-vibe is a Zsh plugin that helps you generate, learn, and safely execute shell commands using natural language queries and a locally hosted LLM (such as Ollama). Designed to bridge the gap between “what do I want to do?” and “how do I write that command?”, vibe makes your terminal faster, smarter, and more educational.
+**vibe** is a Zsh plugin that transforms natural language into shell commands using a locally hosted LLM like Ollama. It helps you work faster, learn more efficiently, and remove the friction of remembering obscure syntax.
 
-🚀 Features
+> “command to show logs of the ollama named docker container”  
+> ⤷ becomes: `docker logs -f ollama`  
+> ⤷ plus inline explanation of each flag.
 
-🔨 Natural language → shell command translation using a local Ollama model.
+---
 
-📖 Explain what the generated command does.
+## 🚀 Features
 
-🧠 Learning mode: practice exercises to help you memorize and apply commands.
+- 🧠 Natural language → shell command translation
+- 💬 Inline explanation of each command and flag
+- ✍️ Editable buffer before executing anything
+- ⚙️ Configurable backend (e.g., model URL, Python path)
+- 🔌 Lightweight Oh My Zsh plugin, no autoloads or wrappers
 
-🛡️ Safety checks for risky commands (sudo rm -rf /, etc.).
+---
 
-⚙️ Built as an Oh My Zsh plugin for seamless shell integration.
+## 📸 Example
 
-🎛️ Plans for multiplexed output (e.g., explanation and command in split panes).
+**You type:**
+```shell
+command to show logs of the ollama named docker container
+```
 
-🔧 Installation
+**Then press your bound key (e.g., `Ctrl+X V`)**
 
-1. Clone the plugin into your custom plugins directory:
+**vibe replaces the line with:**
+```shell
+docker logs -f ollama
+# docker: interacts with Docker containers
+# logs: shows the logs for a specific container
+# -f: follows the log output as it is updated
+# ollama: specifies the name of the container to show logs for
+```
 
-git clone git@github-vibe:LoganPederson/vibe.git ~/.oh-my-zsh/custom/plugins/vibe
+---
 
-2. Enable it in your .zshrc:
+## 🛠️ Installation
 
-# Example
-plugins=(git ssh-agent fzf-tab vibe)
+1. Clone into your Oh My Zsh custom plugins directory:
+
+```bash
+git clone https://github.com/yourusername/vibe.git ~/.oh-my-zsh/custom/plugins/vibe
+```
+
+2. Enable the plugin in your `.zshrc`:
+
+```zsh
+plugins=(git vibe)
+```
 
 3. Reload your shell:
 
+```bash
 source ~/.zshrc
+```
 
-🔌 Requirements
+---
 
-Zsh 5.8+ with Oh My Zsh
+## ⚙️ Configuration (optional)
 
-Python 3.11+
+You can customize the Python path, script location, and Ollama backend via environment variables:
 
-Running Ollama server (ollama serve)
+| Variable         | Default                           | Description                             |
+|------------------|-----------------------------------|-----------------------------------------|
+| `VIBE_PYTHON`     | `python3`                         | Python executable to run `vibe.py`      |
+| `VIBE_SCRIPT`     | Path to included `vibe.py`        | Script that sends the prompt to Ollama  |
+| `OLLAMA_URL`      | `http://localhost:7869`           | Ollama server URL                       |
+| `OLLAMA_MODEL`    | `llama3:8b`                       | Model to use for command generation     |
 
-Optional: tmux or another terminal multiplexer for advanced modes
+Set these in your `.zshrc` if needed:
+```zsh
+export OLLAMA_MODEL="mistral:instruct"
+export VIBE_PYTHON="$HOME/.venvs/vibe/bin/python"
+```
 
-🛠️ Usage
+---
 
-🔍 Basic Use
+## 🔎 How It Works
 
-Type your natural language query directly into your shell prompt and press the bound key (e.g., Shift + +) to trigger vibe. The contents of your prompt will be passed to the LLM and replaced with the generated command.
+- Captures your current Zsh prompt buffer
+- Sends it to your locally hosted Ollama LLM
+- Receives a shell command and inline explanation
+- Replaces the prompt buffer for manual review and execution
 
-Example workflow:
+---
 
-Type your request in your prompt (e.g., list all files larger than 1GB in the /var directory).
+## 🔐 Safety
 
-Press your configured keybind.
+vibe **does not execute anything automatically.**  
+The generated command appears in your prompt — you run it when ready.
 
-vibe replaces the prompt buffer with the generated command.
+---
 
-You review and manually execute it.
+## 🤝 Contributing
 
-🧠 Learning Mode (Planned)
+Pull requests are welcome! Whether it’s:
+- Adding new LLM models or backends
+- Improving parsing or formatting
+- Enhancing documentation
 
-Learning mode will:
+…let’s build a better terminal experience together.
 
-Explain each flag in the generated command.
+---
 
-Give you guided practice writing the command from scratch.
+## 📁 Project Goals
 
-Quiz you on similar command structures.
+- Make terminals more approachable through natural language
+- Help users actually learn the commands they run
+- Stay fast, local, and privacy-respecting
 
-📅 Roadmap
+---
 
-Phase
+## 🧪 Future Ideas
 
-Milestone
+_(Not a roadmap — just things we’re thinking about)_
 
-Target
-
-0.1
-
-Local MVP: natural language → command
-
-Done
-
-0.2
-
-Add inline explanations in split terminal panes
-
-WIP
-
-0.3
-
-Sandbox execution for risky commands
-
-TBD
-
-0.4
-
-Learning mode with quizzes and guided exercises
-
-TBD
-
-0.5
-
-CLI polish, config files, installation script
-
-TBD
-
-1.0
-
-Public release on GitHub / Oh My Zsh registry
-
-TBD
-
-1.1+
-
-Additional LLM backends, advanced sandboxing, extensibility
-
-TBD
-
-⚙️ Example Workflow
-
-# Step 1: Type a request into your shell:
-list all open TCP ports
-
-# Step 2: Press your keybind (e.g., Shift + +)
-
-# Step 3: vibe replaces the line with:
-lsof -iTCP -sTCP:LISTEN -P -n
-
-# Step 4: You confirm and run the command.
-
-🔐 Security Note
-
-vibe does not automatically run commands.It inserts the generated command into your shell prompt for review and manual execution.
-
-Future versions will detect and sandbox potentially destructive commands.
-
-📂 Project Goals
-
-Help intermediate users level up their shell skills.
-
-Accelerate repetitive or hard-to-remember command usage.
-
-Create an approachable way to learn shell tools and options.
-
-🤝 Contributing
-
-PRs and ideas are welcome! Future plans include adding test coverage, plugin documentation, and support for other shells.
-
-ℹ️ Possible Future CLI Support
-
-We may eventually add a CLI interface to vibe that simply prints the generated command to stdout. This could be paired with a Vim-friendly keybind to yank the previous output lines. For now, focus is on Zsh widget integration where the shell buffer can be directly updated.
+- Multiplexed output (e.g. command + explanation in split panes)
+- Interactive learning mode
+- Clipboard copy or direct Vim integration
