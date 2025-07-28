@@ -1,0 +1,17 @@
+
+test -s file.txt && echo "File exists and is not empty" || echo "File does not exist or is empty"
+
+
+# test: evaluates an expression and exits with a status code indicating whether it's true (0) or false (1)
+# -s: tests if the file specified by the next operand exists and has a size greater than zero
+# file.txt: target file to check for existence and non-emptiness
+# &&: executes the right-hand side of the && operator only if the left-hand side is true (i.e., the file exists and is not empty)
+# echo "File exists and is not empty": prints a message indicating that the file exists and is not empty, when the expression is true
+# ||: executes the right-hand side of the || operator only if the left-hand side is false (i.e., the file does not exist or is empty)
+# echo "File does not exist or is empty": prints a message indicating that the file does not exist or is empty, when the expression is false
+journalctl --since=yesterday | less
+
+
+# journalctl: query and display logs from the systemd journal
+# --since=yesterday: only show logs from yesterday (default is last 10 minutes)
+# | less: pipe the output to the less pager for easy scrolling

@@ -3,9 +3,7 @@
 # http://localhost:7869
 
 
-from typing import ParamSpecArgs
 import requests
-import os
 import optparse
 import json
 
@@ -61,7 +59,7 @@ def generate_output_command(userinput:str) -> str:
     r = requests.post(
         url=f"{URL}/api/generate",
         data=json.dumps(DATA),
-        headers={"content-type":"application/json"}, #: _HeadersMapping | None = ...,
+        headers={"content-type":"application/json"},
         allow_redirects=True,
         )
     # http code checking goes here
@@ -83,7 +81,7 @@ def clean_response_string(response_string:str) -> str:
     Often the response string tends to include these    
     '''
     # strip new line characters
-    response_string = response_string.strip('\n')
+    response_string = response_string.strip()
     # replace backtick blocks
     response_string = response_string.replace("```","")
     # replace triple single quote blocks
@@ -94,10 +92,13 @@ def clean_response_string(response_string:str) -> str:
     cleaned_response = response_string.replace("Explanation:","")
     return cleaned_response
 
-def check_for_sudo(cleaned_response:str) -> bool:
+def check_for_sudo(cleaned_response:str) -> str:
+    #TODO: implement better safeguards 
     if 'sudo' in cleaned_response.lower():
-        return True 
-    return False
+        cleaned_response+="""
+        #WARNING: Prompt contains sudo, this command could cause system damage.
+        """ 
+    return cleaned_response
 
 if __name__ == "__main__":
     output_command = generate_output_command(USER_QUERY)
