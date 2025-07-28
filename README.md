@@ -25,7 +25,7 @@
 command to show logs of the ollama named docker container
 ```
 
-**Then press your bound key (e.g., `Ctrl+X V`)**
+**Then press your bound key (e.g., `Ctrl+G`)**
 
 **vibe replaces the line with:**
 ```shell
